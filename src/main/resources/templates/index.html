@@ -54,12 +54,21 @@
             <tr>
                 <th>Course</th>
                 <th>Minutes</th>
+                <th>Action</th>
             </tr>
             </thead>
             <tbody>
-            <tr th:each="studySession : ${sessions}">
+            <tr th:each="studySession, sessionStatus : ${sessions}">
                 <td th:text="${studySession.courseName}">Course</td>
                 <td th:text="${studySession.minutes}">0</td>
+                <td>
+                    <form th:action="@{/sessions/delete}" method="post">
+                        <input type="hidden"
+                               name="index"
+                               th:value="${sessionStatus.index}">
+                        <button type="submit" class="delete-button">Delete</button>
+                    </form>
+                </td>
             </tr>
             </tbody>
         </table>
