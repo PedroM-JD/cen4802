@@ -17,8 +17,8 @@ public class StudySessionController {
     public String showHomePage(Model model) {
         int totalMinutes = 0;
 
-        for (StudySession session : sessions) {
-            totalMinutes += session.getMinutes();
+        for (StudySession studySession : sessions) {
+            totalMinutes += studySession.getMinutes();
         }
 
         model.addAttribute("sessions", sessions);
@@ -32,6 +32,15 @@ public class StudySessionController {
                              @RequestParam("minutes") int minutes) {
         if (!courseName.isBlank() && minutes > 0) {
             sessions.add(new StudySession(courseName.trim(), minutes));
+        }
+
+        return "redirect:/";
+    }
+
+    @PostMapping("/sessions/delete")
+    public String deleteSession(@RequestParam("index") int index) {
+        if (index >= 0 && index < sessions.size()) {
+            sessions.remove(index);
         }
 
         return "redirect:/";

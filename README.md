@@ -7,6 +7,7 @@ A simple Java web application for recording study sessions and tracking the tota
 - Add a study session with a course name and number of minutes
 - Display all recorded study sessions
 - Calculate the total study time
+- Delete an individual study session
 
 ## Technologies
 
