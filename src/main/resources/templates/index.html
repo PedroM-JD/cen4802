@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Study Session Tracker</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+<main class="container">
+    <h1>Study Session Tracker</h1>
+    <p class="subtitle">Record your study time and keep track of your progress.</p>
+
+    <section class="card">
+        <h2>Add Study Session</h2>
+
+        <form th:action="@{/sessions}" method="post">
+            <div class="form-group">
+                <label for="courseName">Course Name</label>
+                <input type="text"
+                       id="courseName"
+                       name="courseName"
+                       placeholder="Example: CEN 4802"
+                       required>
+            </div>
+
+            <div class="form-group">
+                <label for="minutes">Minutes Studied</label>
+                <input type="number"
+                       id="minutes"
+                       name="minutes"
+                       min="1"
+                       required>
+            </div>
+
+            <button type="submit">Add Session</button>
+        </form>
+    </section>
+
+    <section class="card">
+        <h2>Study Summary</h2>
+
+        <p class="total">
+            Total Minutes:
+            <strong th:text="${totalMinutes}">0</strong>
+        </p>
+
+        <p th:if="${sessions.isEmpty()}">
+            No study sessions have been added yet.
+        </p>
+
+        <table th:unless="${sessions.isEmpty()}">
+            <thead>
+            <tr>
+                <th>Course</th>
+                <th>Minutes</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="studySession : ${sessions}">
+                <td th:text="${studySession.courseName}">Course</td>
+                <td th:text="${studySession.minutes}">0</td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+</main>
+</body>
+</html>
