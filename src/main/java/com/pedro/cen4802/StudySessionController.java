@@ -1,3 +1,4 @@
+
 package com.pedro.cen4802;
 
 import org.springframework.stereotype.Controller;
@@ -11,6 +12,7 @@ import java.util.List;
 
 @Controller
 public class StudySessionController {
+
     private final List<StudySession> sessions = new ArrayList<>();
 
     @GetMapping("/")
@@ -23,6 +25,7 @@ public class StudySessionController {
 
         model.addAttribute("sessions", sessions);
         model.addAttribute("totalMinutes", totalMinutes);
+        model.addAttribute("totalSessions", sessions.size());
 
         return "index";
     }
@@ -30,6 +33,7 @@ public class StudySessionController {
     @PostMapping("/sessions")
     public String addSession(@RequestParam("courseName") String courseName,
                              @RequestParam("minutes") int minutes) {
+
         if (!courseName.isBlank() && minutes > 0) {
             sessions.add(new StudySession(courseName.trim(), minutes));
         }
@@ -39,6 +43,7 @@ public class StudySessionController {
 
     @PostMapping("/sessions/delete")
     public String deleteSession(@RequestParam("index") int index) {
+
         if (index >= 0 && index < sessions.size()) {
             sessions.remove(index);
         }
