@@ -1,3 +1,4 @@
+
 package com.pedro.cen4802;
 
 import org.junit.jupiter.api.Test;
@@ -68,5 +69,23 @@ public class StudySessionControllerTests {
         controller.showHomePage(model);
 
         assertEquals(75, model.getAttribute("totalMinutes"));
+    }
+
+    @Test
+    void countsTotalStudySessions() {
+        StudySessionController controller = new StudySessionController();
+
+        controller.addSession("Java", 30);
+        controller.addSession("Python", 45);
+
+        ExtendedModelMap model = new ExtendedModelMap();
+        controller.showHomePage(model);
+
+        assertEquals(2, model.getAttribute("totalSessions"));
+
+        controller.deleteSession(0);
+        controller.showHomePage(model);
+
+        assertEquals(1, model.getAttribute("totalSessions"));
     }
 }
