@@ -25,7 +25,7 @@ public class StudySessionController {
 
         model.addAttribute("sessions", sessions);
         model.addAttribute("totalMinutes", totalMinutes);
-        model.addAttribute("totalSessions", sessions.size() + 1);
+        model.addAttribute("totalSessions", sessions.size());
 
         return "index";
     }
