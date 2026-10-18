@@ -1,12 +1,5 @@
-# This workflow will build a Java project with Maven, and cache/restore any dependencies to improve the workflow execution time
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-maven
 
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-
-name: Java CI with Maven
+name: Java CI with Maven and Docker
 
 on:
   push:
@@ -36,4 +29,16 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: study-session-tracker
-          path: target/*.jar
+          path: target/cen4802-0.0.1-SNAPSHOT.jar
+
+      - name: Build Docker image
+        run: docker build -t study-session-tracker:latest .
+
+      - name: Save Docker image
+        run: docker save study-session-tracker:latest -o study-session-tracker.tar
+
+      - name: Upload Docker image
+        uses: actions/upload-artifact@v4
+        with:
+          name: study-session-tracker-docker
+          path: study-session-tracker.tar
