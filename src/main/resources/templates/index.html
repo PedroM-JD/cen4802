@@ -63,9 +63,9 @@
             </thead>
 
             <tbody>
-            <tr th:each="session, stat : ${sessions}">
-                <td th:text="${session.courseName}">Java</td>
-                <td th:text="${session.minutes}">30</td>
+            <tr th:each="studySession, stat : ${sessions}">
+                <td th:text="${studySession.courseName}">Java</td>
+                <td th:text="${studySession.minutes}">30</td>
                 <td>
                     <form th:action="@{/sessions/delete}" method="post">
                         <input type="hidden" name="index" th:value="${stat.index}">
