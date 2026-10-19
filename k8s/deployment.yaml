@@ -1,0 +1,21 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: study-session-tracker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: study-session-tracker
+  template:
+    metadata:
+      labels:
+        app: study-session-tracker
+    spec:
+      containers:
+        - name: study-session-tracker
+          image: study-session-tracker:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8080
