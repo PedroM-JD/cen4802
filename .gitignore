@@ -33,3 +33,5 @@ target/
 
 # OS files
 .DS_Store
+# Application logs
+logs/

@@ -93,3 +93,47 @@ Restart the application to apply the change. DEBUG records additional informatio
 ## Author
 
 Pedro Salcedo
+
+## Assignment 8: Systems Monitoring
+
+For this assignment, I used Docker stats to monitor the Study Session Tracker while it was running.
+
+### Running the application
+
+Build the project:
+
+    ./mvnw clean verify
+
+Build the Docker image:
+
+    docker build -t cen4802-monitoring:latest .
+
+Run the container:
+
+    docker run -d --name cen4802-monitoring -p 8080:8080 cen4802-monitoring:latest
+
+Open the application at http://localhost:8080/
+
+### Monitoring
+
+To check CPU and memory usage:
+
+    docker stats cen4802-monitoring
+
+I recorded the baseline measurements while the application was idle.
+
+To generate additional activity, run this in another Terminal window:
+
+    ./scripts/monitor-workload.sh
+
+The script sends 10,000 requests to the application.
+
+I compared CPU and memory usage before and during the workload.
+
+To investigate the container after the workload:
+
+    docker inspect cen4802-monitoring
+    docker stats --no-stream cen4802-monitoring
+    docker ps
+
+The measurements and screenshots are included in the Assignment 8 PDF documentation.
