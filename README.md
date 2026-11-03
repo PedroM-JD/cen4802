@@ -137,3 +137,29 @@ To investigate the container after the workload:
     docker ps
 
 The measurements and screenshots are included in the Assignment 8 PDF documentation.
+
+
+
+## Assignment 9 - Software Profiling
+
+For this assignment, I used VisualVM 2.2.2 to check how the Study Session Tracker uses memory.
+
+I started the application with `./mvnw spring-boot:run` and connected VisualVM to the running Java process.
+
+### Workload
+
+I created `profiling-workload.sh` to send 1,000 study sessions to the application.
+
+Run the script with `./profiling-workload.sh`.
+
+### Results
+
+VisualVM showed 1,002 StudySession objects using 24,048 bytes after the workload.
+
+After performing garbage collection, the object count stayed at 1,002. This is consistent with the application keeping the sessions in an ArrayList.
+
+### Possible Improvement
+
+One improvement would be to limit the number of sessions stored in memory or move older sessions into a database.
+
+I would repeat the same workload and compare memory usage and retained objects to see if the change helped.
