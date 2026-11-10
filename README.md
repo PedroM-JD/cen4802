@@ -138,8 +138,6 @@ To investigate the container after the workload:
 
 The measurements and screenshots are included in the Assignment 8 PDF documentation.
 
-
-
 ## Assignment 9 - Software Profiling
 
 For this assignment, I used VisualVM 2.2.2 to check how the Study Session Tracker uses memory.
@@ -163,3 +161,112 @@ After performing garbage collection, the object count stayed at 1,002. This is c
 One improvement would be to limit the number of sessions stored in memory or move older sessions into a database.
 
 I would repeat the same workload and compare memory usage and retained objects to see if the change helped.
+
+## Assignment 10 - Infrastructure as Code
+
+For this assignment, I used Terraform to manage the Docker infrastructure for the Study Session Tracker.
+
+I used Terraform 1.17.1 with the Docker provider version 4.6.0.
+
+### Infrastructure
+
+The configuration is stored in `terraform/main.tf`.
+
+Terraform manages two resources:
+
+- A Docker network named `cen4802-terraform-network`
+- An application container named `cen4802-terraform-app`
+
+The container uses the existing `cen4802-app:latest` Docker image.
+
+### Running with Terraform
+
+First, build the application and Docker image from the project directory:
+
+```bash
+./mvnw clean verify
+docker build -t cen4802-app:latest .
+```
+
+Start Docker Desktop and make sure Terraform is installed.
+
+Navigate to the Terraform directory:
+
+```bash
+cd terraform
+```
+
+Initialize Terraform:
+
+```bash
+terraform init
+```
+
+Validate the configuration:
+
+```bash
+terraform fmt
+terraform validate
+```
+
+Preview the infrastructure:
+
+```bash
+terraform plan
+```
+
+Create the infrastructure:
+
+```bash
+terraform apply
+```
+
+Type `yes` when Terraform asks for confirmation.
+
+The application can then be opened at http://localhost:8082.
+
+### Infrastructure Modification
+
+I originally deployed the application using port 8081.
+
+I then changed the external port to 8082 in `main.tf`.
+
+After running `terraform plan`, Terraform showed that the container needed to be replaced.
+
+I ran `terraform apply` again, and Terraform removed the old container and created a new one using port 8082.
+
+The Docker network remained unchanged.
+
+### Removing the Infrastructure
+
+To preview the removal:
+
+```bash
+terraform plan -destroy
+```
+
+To remove the resources:
+
+```bash
+terraform destroy
+```
+
+I verified that the container and network were removed using:
+
+```bash
+docker ps -a --filter "name=cen4802-terraform-app"
+docker network ls --filter "name=cen4802-terraform-network"
+terraform state list
+```
+
+Terraform removed both resources successfully.
+
+### Notes
+
+The Docker provider connects to Docker Desktop using the local Docker socket configured in `main.tf`.
+
+The provider path currently uses my Mac's local username, so it would need to be updated when running the configuration on another computer.
+
+The Terraform state files and downloaded provider files are excluded from Git.
+
+The configuration files remain available so the infrastructure can be created again.
