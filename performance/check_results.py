@@ -3,7 +3,7 @@ import sys
 
 # Performance requirements
 expected_requests = 500
-max_response_time = 1
+max_response_time = 500
 
 with open(sys.argv[1], newline="") as file:
     results = list(csv.DictReader(file))
