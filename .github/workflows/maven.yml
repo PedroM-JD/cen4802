@@ -1,9 +1,8 @@
-
-name: Java CI with Maven and Docker
+name: Java CI with Maven, Docker and Performance Testing
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "feature/final-project" ]
   pull_request:
     branches: [ "main" ]
 
@@ -23,7 +22,7 @@ jobs:
           cache: maven
 
       - name: Build and test with Maven
-        run: ./mvnw clean package
+        run: ./mvnw clean verify
 
       - name: Upload packaged application
         uses: actions/upload-artifact@v4
@@ -33,6 +32,61 @@ jobs:
 
       - name: Build Docker image
         run: docker build -t study-session-tracker:latest .
+
+      - name: Start application container
+        run: |
+          docker run -d --name study-tracker-ci -p 8080:8080 study-session-tracker:latest
+
+      - name: Wait for application
+        run: |
+          for i in {1..30}; do
+            if curl -fsS http://localhost:8080/ > /dev/null; then
+              echo "Application is ready"
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "Application failed to start"
+          exit 1
+
+      - name: Cache JMeter
+        id: jmeter-cache
+        uses: actions/cache@v4
+        with:
+          path: apache-jmeter-5.6.3
+          key: jmeter-5.6.3-${{ runner.os }}
+
+      - name: Install JMeter
+        if: steps.jmeter-cache.outputs.cache-hit != 'true'
+        run: |
+          curl -fL --retry 3 --connect-timeout 30 --max-time 1200 https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-5.6.3.tgz -o jmeter.tgz
+          tar -xzf jmeter.tgz
+
+      - name: Set up JMeter path
+        run: echo "$PWD/apache-jmeter-5.6.3/bin" >> "$GITHUB_PATH"
+
+      - name: Run performance test
+        run: |
+          mkdir -p target/performance
+          jmeter -n -t performance/load-test.jmx -l target/performance/results.jtl -e -o target/performance/report
+
+      - name: Check performance results
+        run: python3 performance/check_results.py target/performance/results.jtl
+
+      - name: Upload performance report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: performance-test-report
+          path: target/performance/
+
+      - name: Show application logs
+        if: always()
+        run: docker logs study-tracker-ci
+
+      - name: Stop application container
+        if: always()
+        run: docker rm -f study-tracker-ci
 
       - name: Save Docker image
         run: docker save study-session-tracker:latest -o study-session-tracker.tar
