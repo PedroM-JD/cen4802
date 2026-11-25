@@ -1,4 +1,3 @@
-
 terraform {
   required_providers {
     docker = {
@@ -18,7 +17,7 @@ resource "docker_network" "study_tracker_network" {
 
 resource "docker_container" "study_tracker" {
   name    = "cen4802-terraform-app"
-  image   = "cen4802-app:latest"
+  image   = "study-session-tracker:latest"
   restart = "no"
 
   ports {
